@@ -47,17 +47,10 @@
             </intent-filter>
         </receiver>
 
-        <!-- partytrack -->
-        <receiver
-            android:name="it.partytrack.sdk.ReferrerReceiver"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="com.android.vending.INSTALL_REFERRER" />
-            </intent-filter>
-        </receiver>
+
 
         <activity
-            android:name="com.ujhgl.lohsy.ljsomsh.ui.PTActivity"
+            android:name="com.ujhgl.lohsy.ljsomsh.ui.HYActivity"
             android:configChanges="orientation|screenSize"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity

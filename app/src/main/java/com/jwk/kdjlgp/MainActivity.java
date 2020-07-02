@@ -2,7 +2,9 @@ package com.jwk.kdjlgp;
 
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -12,6 +14,7 @@ import android.widget.TextView;
 
 import com.ujhgl.lohsy.ljsomsh.HYCenter;
 import com.ujhgl.lohsy.ljsomsh.HYError;
+import com.ujhgl.lohsy.ljsomsh.HYGameLevel;
 import com.ujhgl.lohsy.ljsomsh.HYGameUser;
 import com.ujhgl.lohsy.ljsomsh.HYInitDelegate;
 import com.ujhgl.lohsy.ljsomsh.HYLog;
@@ -51,13 +54,6 @@ public class MainActivity
         aPlatform.setLoginDelegate(this);
         aPlatform.setLogoutDelegate(this);
 
-        // GameControl
-       // aPlatform.setmGameControlListener(this);
-
-        aPlatform.setShareDelegate(this);
-
-        //HYCenter.shared().requestPermissions(this);
-
 
         // 显示包名，版本号 build号相关
         try {
@@ -80,24 +76,6 @@ public class MainActivity
 
         }
 
-
-        // login
-        Button aLogin = (Button)findViewById(R.id.mosdk_demo_id_login);
-        aLogin.setEnabled(true);
-        aLogin.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View v)
-            {
-
-               // CrashReport.testJavaCrash();
-
-                if (!aPlatform.userHasLogged())
-                {
-                    aPlatform.login(MainActivity.this);
-                }
-            }
-        });
-        mLogin = aLogin;
 
         // request products
         Button aRP = (Button)findViewById(R.id.mosdk_demo_id_rp);
@@ -143,12 +121,13 @@ public class MainActivity
                 if (aPlatform.userHasLogged())
                 {
                     HYCenter aPlatform	= HYCenter.shared();
+                    aPlatform.setShareDelegate(MainActivity.this);
                     HYUser aUser			= aPlatform.getUser();
                     HYShare aShare			= aPlatform.getShare(HYShareType.Facebook);
                     String aLocale			= aPlatform.getLocale();
                     String aExtra = "aExtra";//自定义字段，服务器发货会传给游戏服务器
 
-                    String gameRole = "role";
+                    String gameRole = "100";
                     String gameServer = "1";
 
                     //若传自定义字段请使用 MOGameUser aGameUser = new MOGameUser(gameRole, gameServer, aLocale,aExtra);
@@ -179,6 +158,13 @@ public class MainActivity
             }
         });
 
+        findViewById(R.id.mosdk_demo_id_open_cafe).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                HYCenter.shared().openCafeHome(MainActivity.this);
+            }
+        });
+
 
 
     }
@@ -201,7 +187,16 @@ public class MainActivity
         super.onActivityResult(aRequestCode, aResultCode, aData);
     }
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        HYCenter.shared().onConfigurationChanged(newConfig,this);
+    }
 
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(HYCenter.shared().attachBaseContext(newBase));
+    }
 
     @Override
     public void onStop()
@@ -265,13 +260,22 @@ public class MainActivity
 
         HYLog.info("Demo initSuccess");
 
-        mLogin.setEnabled(true);
 
+
+        //发起自动登录
         if (!platform.userHasLogged())
         {
             platform.automaticLogin(this);
         }
 
+        //魔亚sdk 服务器 切换策略结果（需要在初始化成功访问结果）
+        HYGameLevel gameLevel = HYCenter.shared().getSDkGameLevel();
+        if (gameLevel == HYGameLevel.ZERO){
+            //正式服逻辑
+        }
+        else if (gameLevel == HYGameLevel.ONE){
+            //测试服逻辑
+        }
 
 
     }
@@ -294,7 +298,7 @@ public class MainActivity
 
     public void loginSuccess(HYUser aUser)
     {
-        mLogin.setEnabled(false);
+
         mRP.setEnabled(true);
         mUC.setEnabled(true);
         mFB.setEnabled(true);
@@ -348,7 +352,6 @@ public class MainActivity
     }
 
     private boolean 	mInited;
-    private Button		mLogin;
     private Button		mRP;
     //private Button		mBuy;
     private Button		mUC;
