@@ -5,43 +5,45 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
+import androidx.core.app.ActivityCompat;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.ujhgl.lohsy.ljsomsh.HYCenter;
-import com.ujhgl.lohsy.ljsomsh.HYError;
-import com.ujhgl.lohsy.ljsomsh.HYGameLevel;
-import com.ujhgl.lohsy.ljsomsh.HYGameUser;
-import com.ujhgl.lohsy.ljsomsh.HYInitDelegate;
-import com.ujhgl.lohsy.ljsomsh.HYLog;
-import com.ujhgl.lohsy.ljsomsh.HYLoginDelegate;
-import com.ujhgl.lohsy.ljsomsh.HYLogoutDelegate;
-import com.ujhgl.lohsy.ljsomsh.HYShare;
-import com.ujhgl.lohsy.ljsomsh.HYShareDelegate;
-import com.ujhgl.lohsy.ljsomsh.HYShareType;
-import com.ujhgl.lohsy.ljsomsh.HYUser;
-import com.ujhgl.lohsy.ljsomsh.gamecontrol.HYGameControlDelegate;
+
+import com.haiwan.lantian.vhaiw.HaiWan;
+import com.haiwan.lantian.vhaiw.LTUser;
+import com.haiwan.lantian.vhaiw.MKShare;
+import com.haiwan.lantian.vhaiw.MKShareDelegate;
+import com.haiwan.lantian.vhaiw.QDShareType;
+import com.haiwan.lantian.vhaiw.QGLog;
+import com.haiwan.lantian.vhaiw.QKInitCallBack;
+import com.haiwan.lantian.vhaiw.QYLoginCallBack;
+import com.haiwan.lantian.vhaiw.TBLogoutCallBack;
+import com.haiwan.lantian.vhaiw.TLGameLevel;
+import com.haiwan.lantian.vhaiw.TQGameUser;
+import com.haiwan.lantian.vhaiw.ZRError;
+
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 
 
 public class MainActivity
         extends Activity
-        implements HYInitDelegate,
-        HYLoginDelegate,
-        HYLogoutDelegate,
-        HYShareDelegate, HYGameControlDelegate,
+        implements QKInitCallBack,
+        QYLoginCallBack,
+        TBLogoutCallBack,
+        MKShareDelegate,
         ActivityCompat.OnRequestPermissionsResultCallback{
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
 
-        final HYCenter aPlatform = HYCenter.shared();
+        final HaiWan aPlatform = HaiWan.shared();
         aPlatform.setInitDelegate(this);
 
 
@@ -120,10 +122,10 @@ public class MainActivity
 
                 if (aPlatform.userHasLogged())
                 {
-                    HYCenter aPlatform	= HYCenter.shared();
+                    HaiWan aPlatform	= HaiWan.shared();
                     aPlatform.setShareDelegate(MainActivity.this);
-                    HYUser aUser			= aPlatform.getUser();
-                    HYShare aShare			= aPlatform.getShare(HYShareType.Facebook);
+                    LTUser aUser			= aPlatform.getUser();
+                    MKShare aShare			= aPlatform.getShare(QDShareType.Facebook);
                     String aLocale			= aPlatform.getLocale();
                     String aExtra = "aExtra";//自定义字段，服务器发货会传给游戏服务器
 
@@ -131,7 +133,7 @@ public class MainActivity
                     String gameServer = "1";
 
                     //若传自定义字段请使用 MOGameUser aGameUser = new MOGameUser(gameRole, gameServer, aLocale,aExtra);
-                    HYGameUser aGameUser = new HYGameUser(gameRole, gameServer, aLocale);
+                    TQGameUser aGameUser = new TQGameUser(gameRole, gameServer, aLocale);
 
                     aShare.showFB(MainActivity.this,aUser,aGameUser, null);
 
@@ -145,7 +147,7 @@ public class MainActivity
         faqBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                HYCenter.shared().showHelpCenter(MainActivity.this);
+                HaiWan.shared().showAIHelpCenter(MainActivity.this);
             }
         });
 
@@ -154,14 +156,14 @@ public class MainActivity
         cvtBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                HYCenter.shared().startConversation(MainActivity.this);
+                HaiWan.shared().startAIHelpConversation(MainActivity.this);
             }
         });
 
         findViewById(R.id.mosdk_demo_id_open_cafe).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                HYCenter.shared().openCafeHome(MainActivity.this);
+                HaiWan.shared().openCafeHome(MainActivity.this);
             }
         });
 
@@ -180,7 +182,7 @@ public class MainActivity
     public void onActivityResult(int aRequestCode, int aResultCode, Intent aData)
     {
 
-        final HYCenter aPlatform = HYCenter.shared();
+        final HaiWan aPlatform = HaiWan.shared();
         if (aPlatform.onActivityResult(this, aRequestCode, aResultCode, aData))
             return;
 
@@ -190,12 +192,12 @@ public class MainActivity
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        HYCenter.shared().onConfigurationChanged(newConfig,this);
+        HaiWan.shared().onConfigurationChanged(newConfig,this);
     }
 
     @Override
     protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(HYCenter.shared().attachBaseContext(newBase));
+        super.attachBaseContext(HaiWan.shared().attachBaseContext(newBase));
     }
 
     @Override
@@ -203,7 +205,7 @@ public class MainActivity
     {
         super.onStop();
 
-        HYCenter platform = HYCenter.shared();
+        HaiWan platform = HaiWan.shared();
         platform.dismisFloatWindow(this);
         platform.inactive(this);
     }
@@ -214,15 +216,15 @@ public class MainActivity
         super.onResume();
 
 
-        HYCenter platform = HYCenter.shared();
+        HaiWan platform = HaiWan.shared();
         if (platform.userHasLogged())
         {
             String aLocale			= platform.getLocale();
 
-            HYGameUser aGameUser = new HYGameUser("1000", "1", aLocale);
+            TQGameUser aGameUser = new TQGameUser("1000", "1", aLocale);
             platform.presentFloatWindow(this,aGameUser);
         }
-        HYCenter.shared().active(this);
+        HaiWan.shared().active(this);
     }
 
     //请求权限
@@ -251,44 +253,6 @@ public class MainActivity
     }
 
 
-
-    @Override
-    public void initSuccess(HYCenter platform)
-    {
-
-        mInited = true;
-
-        HYLog.info("Demo initSuccess");
-
-
-
-        //发起自动登录
-        if (!platform.userHasLogged())
-        {
-            platform.automaticLogin(this);
-        }
-
-        //魔亚sdk 服务器 切换策略结果（需要在初始化成功访问结果）
-        HYGameLevel gameLevel = HYCenter.shared().getSDkGameLevel();
-        if (gameLevel == HYGameLevel.ZERO){
-            //正式服逻辑
-        }
-        else if (gameLevel == HYGameLevel.ONE){
-            //测试服逻辑
-        }
-
-
-    }
-
-    @Override
-    public void initFailure(HYError error)
-    {
-
-        mInited = false;
-
-        HYLog.info("Demo initFailure: %s", error);
-    }
-
     public void loginCancelled()
     {
 
@@ -296,7 +260,7 @@ public class MainActivity
         System.exit(0);
     }
 
-    public void loginSuccess(HYUser aUser)
+    public void loginSuccess(LTUser aUser)
     {
 
         mRP.setEnabled(true);
@@ -305,31 +269,51 @@ public class MainActivity
 
         //用户唯一标识 aUser.getID();
 
-        HYCenter aPlatform	= HYCenter.shared();
+        HaiWan aPlatform	= HaiWan.shared();
         String aLocale			= aPlatform.getLocale();
 
         String gameRole = "1000";
         String gameServerId = "1";
-        HYGameUser aGameUser = new HYGameUser(gameRole, gameServerId, aLocale);
-        HYCenter.shared().presentFloatWindow(this,aGameUser);
+        TQGameUser aGameUser = new TQGameUser(gameRole, gameServerId, aLocale);
+        HaiWan.shared().presentFloatWindow(this,aGameUser);
     }
 
-    public void loginFailure(HYError aError)
+    public void loginFailure(ZRError aError)
     {
 
-        HYLog.info("Demo loginFailure: %s", aError);
+        QGLog.info("Demo loginFailure: %s", aError);
     }
 
     public void logoutSuccess(String aUser)
     {
 
-        HYLog.info("Demo logoutSuccess: %s", aUser);
+        QGLog.info("Demo logoutSuccess: %s", aUser);
+        //上传服务器标识和角色名
+        String aServer = "10";//游戏服标识
+        String aRole = "Vayne";//角色名
+        HashMap<String,String> aPlayerInfor = new HashMap<String, String>();
+        aPlayerInfor.put("server",aServer);
+        aPlayerInfor.put("role",aRole);
+        HaiWan.shared().submitPlayerInfo(aPlayerInfor);
+
+        TLGameLevel aLevel = HaiWan.shared().getSDkGameLevel();
+        if (aLevel == TLGameLevel.ZERO){
+            Intent intent = new Intent(this,OfficialActivity.class);
+            startActivity(intent);
+        }
+        else if (aLevel == TLGameLevel.ONE){
+
+            //显示测试服
+            Intent intent = new Intent(this,TestServerActivity.class);
+            startActivity(intent);
+        }
+
     }
 
-    public void logoutFailure(HYError aError)
+    public void logoutFailure(ZRError aError)
     {
 
-        HYLog.info("Demo logoutFailure: %s", aError);
+        QGLog.info("Demo logoutFailure: %s", aError);
     }
 
 
@@ -360,27 +344,43 @@ public class MainActivity
 
 
 
+
+
+    //初始化代理方法
     @Override
-    public void enterServerWithUserInfor(HYUser HYUser, int i) {
+    public void initSuccess(@Nullable HaiWan haiWan)
+    {
 
-        //上传服务器标识和角色名
-        String aServer = "10";//游戏服标识
-        String aRole = "Vayne";//角色名
-        HashMap<String,String> aPlayerInfor = new HashMap<String, String>();
-        aPlayerInfor.put("server",aServer);
-        aPlayerInfor.put("role",aRole);
-        HYCenter.shared().submitPlayerInfo(aPlayerInfor);
+        mInited = true;
 
-        if ( i == 0){
-            //显示测试服
-            Intent intent = new Intent(this,TestServerActivity.class);
-            startActivity(intent);
+        QGLog.info("Demo initSuccess");
 
+        //发起自动登录
+        if (!haiWan.userHasLogged())
+        {
+            haiWan.automaticLogin(this);
         }
-        else  if (i == 0){
-            //显示游戏服
+
+        //魔亚sdk 服务器 切换策略结果（需要在初始化成功访问结果）
+        TLGameLevel aLevel = HaiWan.shared().getSDkGameLevel();
+        if (aLevel == TLGameLevel.ZERO){
             Intent intent = new Intent(this,OfficialActivity.class);
             startActivity(intent);
         }
+        else if (aLevel == TLGameLevel.ONE){
+
+            //显示测试服
+            Intent intent = new Intent(this,TestServerActivity.class);
+            startActivity(intent);
+        }
+
+
     }
+    @Override
+    public void initFailure(@Nullable ZRError zrError) {
+        mInited = false;
+
+        QGLog.info("Demo initFailure: %s", zrError);
+    }
+
 }

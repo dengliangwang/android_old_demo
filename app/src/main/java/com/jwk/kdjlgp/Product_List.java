@@ -8,13 +8,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 
+import com.haiwan.lantian.vhaiw.BKProduct;
+import com.haiwan.lantian.vhaiw.HaiWan;
+import com.haiwan.lantian.vhaiw.QGLog;
+import com.haiwan.lantian.vhaiw.QZTradeDelegate;
+import com.haiwan.lantian.vhaiw.YQConstants;
+import com.haiwan.lantian.vhaiw.ZRError;
 
-import com.ujhgl.lohsy.ljsomsh.HYCenter;
-import com.ujhgl.lohsy.ljsomsh.HYConstants;
-import com.ujhgl.lohsy.ljsomsh.HYError;
-import com.ujhgl.lohsy.ljsomsh.HYLog;
-import com.ujhgl.lohsy.ljsomsh.HYProduct;
-import com.ujhgl.lohsy.ljsomsh.HYTradeDelegate;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,9 +25,9 @@ import java.util.Map;
 
 
 
-public class Product_List extends Activity implements HYTradeDelegate {
+public class Product_List extends Activity implements QZTradeDelegate {
 
-	private List<HYProduct> mProducts;
+	private List<BKProduct> mProducts;
 	private ListView listView;
 
 
@@ -36,8 +37,8 @@ public class Product_List extends Activity implements HYTradeDelegate {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_product__list);
 
-		mProducts = new ArrayList<HYProduct>();
-		HYCenter platform = HYCenter.shared();
+		mProducts = new ArrayList<BKProduct>();
+		HaiWan platform = HaiWan.shared();
 		platform.setTradeDelegate(this);
 		platform.getProductsFromStore(this);
 
@@ -64,7 +65,7 @@ public class Product_List extends Activity implements HYTradeDelegate {
 	public void onActivityResult(int aRequestCode, int aResultCode, Intent aData)
 	{
 
-		final HYCenter aPlatform = HYCenter.shared();
+		final HaiWan aPlatform = HaiWan.shared();
 		if (aPlatform.onActivityResult(this, aRequestCode, aResultCode, aData))
 			return;
 
@@ -73,7 +74,7 @@ public class Product_List extends Activity implements HYTradeDelegate {
 
 
 
-	public void requestProductsSuccess(HYProduct[] aProducts)
+	public void requestProductsSuccess(BKProduct[] aProducts)
 	{
 	    /**
 	     * ħ��ƽ̨����
@@ -95,13 +96,13 @@ public class Product_List extends Activity implements HYTradeDelegate {
 		productListAdapter.setDta(mProducts);
 		productListAdapter.notifyDataSetChanged();
 
-		HYLog.info("Demo requestProductsSuccess: %s" + Arrays.toString(aProducts));
+		QGLog.info("Demo requestProductsSuccess: %s" + Arrays.toString(aProducts));
 
 
 
 	}
 
-	public void requestProductsFailure(HYError aError)
+	public void requestProductsFailure(ZRError aError)
 	{
 	    /**
 	     * ħ��ƽ̨����
@@ -109,7 +110,7 @@ public class Product_List extends Activity implements HYTradeDelegate {
 	     * ������Ʒ��Ϣʧ�ܣ����������ԭ��
 	     */
 
-		HYLog.info("Demo requestProductsFailure: %s", aError);
+		QGLog.info("Demo requestProductsFailure: %s", aError);
 	}
 
 	public void buyProductSuccess(Map<String, Object> aArgs)
@@ -119,18 +120,18 @@ public class Product_List extends Activity implements HYTradeDelegate {
 	     *
 	     * ����ɹ�����ȡ��Ӧ����Ʒ����
 	     */
-		HYProduct aProduct = null;
+		BKProduct aProduct = null;
 
-		Object aObj = aArgs.get(HYConstants.ARG_PRODUCT);
-		if (null != aObj && aObj instanceof HYProduct)
+		Object aObj = aArgs.get(YQConstants.ARG_PRODUCT);
+		if (null != aObj && aObj instanceof BKProduct)
 		{
-			aProduct = (HYProduct)aObj;
+			aProduct = (BKProduct)aObj;
 		}
 
-		HYLog.info("Demo buyProductSuccess: %s", aProduct);
+		QGLog.info("Demo buyProductSuccess: %s", aProduct);
 	}
 
-	public void buyProductFailure(HYError aError)
+	public void buyProductFailure(ZRError aError)
 	{
 	    /**
 	     * ħ��ƽ̨����
@@ -138,25 +139,17 @@ public class Product_List extends Activity implements HYTradeDelegate {
 	     * ����ʧ�ܣ����������ԭ��
 	     */
 
-		HYLog.info("Demo buyProductFailure: %s", aError);
+		QGLog.info("Demo buyProductFailure: %s", aError);
 	}
 
-	public void consumeSuccess(Map<String, Object> aArgs)
-	{
-	    /**
-	     * ħ��ƽ̨����
-	     *
-	     * ��δʹ��
-	     */
+
+	@Override
+	public void consumeFailure(@Nullable ZRError zrError) {
+
 	}
 
-	public void consumeFailure(HYError aError)
-	{
-	    /**
-	     * ħ��ƽ̨����
-	     *
-	     * ��δʹ��
-	     */
-	}
+	@Override
+	public void consumeSuccess(@Nullable Map<String, ?> map) {
 
+	}
 }

@@ -2,8 +2,7 @@ package com.jwk.kdjlgp;
 
 import android.app.Application;
 
-import com.ujhgl.lohsy.ljsomsh.HYCenter;
-
+import com.haiwan.lantian.vhaiw.HaiWan;
 
 
 /**
@@ -15,14 +14,14 @@ public class MOApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        HYCenter.shared().ApplicationInit(this);
+        HaiWan.shared().ApplicationInit(this);
 
     }
 
     @Override
     public void onTerminate() {
 
-        HYCenter.shared().applicationDestroy();
+        HaiWan.shared().applicationDestroy();
         super.onTerminate();
     }
 }

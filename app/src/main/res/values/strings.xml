@@ -7,13 +7,15 @@
     <string name="mosdk_demo_str_uc">用户中心</string>
     <string name="mosdk_demo_str_fb">FB 分享</string>
     <string name="mosdk_demo_name">七剑</string>
-    <string name="mosdk_login_host">graph.morlia.com</string>
-    <string name="mosdk_login_port">80</string>
     <string name="title_activity_product__list">Product_List</string>
     <string name="productActivity_back_mainActivity">返回</string>
+
+    <!--facebook -->
     <string name="facebook_app_id">1283735508438146</string>
     <string name="fb_login_protocol_scheme">fb1283735508438146</string>
+    <!--默认语言-->
     <string name="mosdk_default_locale" translatable="false">zh-Hant</string>
+    <!--域名，端口号-->
     <string name="mosdk_morlia_host" translatable="false">kqrnqua.lihruqvytz.com</string>
     <integer name="mosdk_morlia_port">443</integer>
 </resources>

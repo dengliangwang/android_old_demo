@@ -41,30 +41,25 @@
         <!-- appsflyer -->
         <receiver
             android:name="com.appsflyer.MultipleInstallBroadcastReceiver"
-            android:exported="true">
+            android:exported="true" >
             <intent-filter>
                 <action android:name="com.android.vending.INSTALL_REFERRER" />
             </intent-filter>
         </receiver>
 
-
-
-        <activity
-            android:name="com.ujhgl.lohsy.ljsomsh.ui.HYActivity"
-            android:configChanges="orientation|screenSize"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity
             android:name="com.google.android.gms.auth.api.signin.internal.SignInHubActivity"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
+
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
-            android:label="mosdk_demo_name"
+            android:label="@string/app_name"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
             tools:replace="android:theme" />
         <activity
             android:name="com.facebook.CustomTabActivity"
-            android:exported="true">
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -75,9 +70,26 @@
             </intent-filter>
         </activity>
 
+        <!-- {facebook_app_id} 修改为对应的facebook_app_id -->
+        <provider android:authorities="com.facebook.app.FacebookContentProvider{facebook_app_id}"
+            android:name="com.facebook.FacebookContentProvider"
+            android:exported="true"/>
+
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
+
+        <!-- AIHelp界面设置为竖屏 -->
+        <activity
+            android:name="net.aihelp.ui.HostActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize"
+            android:screenOrientation="portrait"
+            tools:node="replace"/>
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
+
         <meta-data
             android:name="debug"
             android:value="true" />
@@ -87,6 +99,13 @@
             android:name=".Product_List"
 
             android:label="商品列表" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <!-- 这里的scheme 和 host 需从我们运营处获取-->
+                <data android:scheme="hyen" android:host="com.ruqbp.lobnq"></data>
+            </intent-filter>
         </activity>
 
         <activity android:name=".TestServerActivity" />
